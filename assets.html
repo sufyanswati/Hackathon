@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MaintainIQ | Assets</title>
+
+  <!-- Google Font: Poppins (same as mainpage.html) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Boxicons (same as mainpage.html) -->
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+
+  <!-- Shared dashboard styles — sidebar, topbar, colors, layout all come from here -->
+  <link rel="stylesheet" href="dashboard.css" />
+
+  <!-- Assets module styles (page-specific only: toolbar, table, modals) -->
+  <link rel="stylesheet" href="assets.css" />
+</head>
+<body>
+
+  <!-- ============ MOBILE OVERLAY (shown behind sidebar on small screens) ============ -->
+  <div class="overlay" id="overlay"></div>
+
+  <div class="app-layout">
+
+    <!-- ======================= SIDEBAR (copied exactly from mainpage.html) ======================= -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <i class='bx bxs-wrench'></i>
+          <span>Maintain<em>IQ</em></span>
+        </div>
+        <!-- Close button for mobile -->
+        <button class="sidebar-close" id="sidebarClose" aria-label="Close menu">
+          <i class='bx bx-x'></i>
+        </button>
+      </div>
+
+      <nav class="sidebar-nav">
+        <ul>
+          <li class="nav-item" data-page="dashboard">
+            <a href="mainpage.html">
+              <i class='bx bxs-dashboard'></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li class="nav-item active" data-page="assets">
+            <a href="assets.html">
+              <i class='bx bxs-package'></i>
+              <span>Assets</span>
+            </a>
+          </li>
+          <li class="nav-item" data-page="issues">
+            <a href="#">
+              <i class='bx bxs-error-alt'></i>
+              <span>Issues</span>
+            </a>
+          </li>
+          <li class="nav-item" data-page="maintenance">
+            <a href="#">
+              <i class='bx bxs-cog'></i>
+              <span>Maintenance</span>
+            </a>
+          </li>
+          <li class="nav-item" data-page="history">
+            <a href="#">
+              <i class='bx bxs-history'></i>
+              <span>History</span>
+            </a>
+          </li>
+          <li class="nav-item" data-page="profile">
+            <a href="#">
+              <i class='bx bxs-user-circle'></i>
+              <span>Profile</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="sidebar-footer">
+        <a href="#" class="logout-btn" id="logoutBtn">
+          <i class='bx bx-log-out'></i>
+          <span>Logout</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- ======================= MAIN CONTENT ======================= -->
+    <div class="main-content">
+
+      <!-- ======================= TOP NAVBAR (copied exactly from mainpage.html) ======================= -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="hamburger" id="hamburgerBtn" aria-label="Open menu">
+            <i class='bx bx-menu'></i>
+          </button>
+          <h1 class="page-title">Assets</h1>
+        </div>
+
+        <div class="topbar-right">
+          <button class="icon-btn" id="notificationBtn" aria-label="Notifications">
+            <i class='bx bxs-bell'></i>
+            <span class="badge" id="notificationBadge">3</span>
+          </button>
+
+          <div class="user-profile">
+            <img src="https://api.dicebear.com/7.x/initials/svg?seed=Admin&backgroundColor=2563eb" alt="User avatar" class="avatar" />
+            <div class="user-info">
+              <span class="user-name">Admin User</span>
+              <span class="user-role">Administrator</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- ============================================================
+           PAGE CONTENT — ASSET MANAGEMENT MODULE
+           ============================================================ -->
+      <main class="page-content">
+
+        <!-- Page toolbar: search, filter, add button -->
+        <section class="assets-toolbar">
+          <div class="toolbar-left">
+            <div class="search-box">
+              <i class='bx bx-search search-icon'></i>
+              <input
+                type="text"
+                id="searchInput"
+                placeholder="Search by asset name or asset code..."
+                aria-label="Search assets"
+              />
+            </div>
+
+            <select id="statusFilter" class="filter-select" aria-label="Filter by status">
+              <option value="All">All Status</option>
+              <option value="Operational">Operational</option>
+              <option value="Maintenance">Maintenance</option>
+              <option value="Out of Service">Out of Service</option>
+            </select>
+          </div>
+
+          <div class="toolbar-right">
+            <button id="addAssetBtn" class="btn btn-primary">
+              <i class='bx bx-plus'></i> Add Asset
+            </button>
+          </div>
+        </section>
+
+        <!-- Asset table card -->
+        <section class="table-card">
+          <div class="table-scroll">
+            <table class="assets-table">
+              <thead>
+                <tr>
+                  <th>Asset Code</th>
+                  <th>Asset Name</th>
+                  <th>Category</th>
+                  <th>Location</th>
+                  <th>Status</th>
+                  <th>Last Service Date</th>
+                  <th class="actions-col">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="assetsTableBody">
+                <!-- Rows are injected here by assets.js -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Empty state (shown/hidden by assets.js) -->
+          <div id="emptyState" class="empty-state" hidden>
+            <i class='bx bx-package empty-icon'></i>
+            <p>No assets found.</p>
+          </div>
+
+          <!-- Loading state -->
+          <div id="loadingState" class="loading-state">
+            <span class="spinner"></span>
+            <p>Loading assets...</p>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       ADD / EDIT ASSET MODAL
+       ============================================================ -->
+  <div class="modal-overlay" id="assetModalOverlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-header">
+        <h2 id="modalTitle">Add Asset</h2>
+        <button class="modal-close" id="closeModalBtn" aria-label="Close"><i class='bx bx-x'></i></button>
+      </div>
+
+      <form id="assetForm" class="modal-body" novalidate>
+        <!-- Hidden field to track edit mode -->
+        <input type="hidden" id="assetId" value="" />
+
+        <div class="form-group">
+          <label for="assetName">Asset Name <span class="required">*</span></label>
+          <input type="text" id="assetName" placeholder="e.g. HP LaserJet Printer" />
+          <span class="error-msg" id="err-assetName"></span>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="category">Category <span class="required">*</span></label>
+            <select id="category">
+              <option value="">Select category</option>
+              <option value="Electronics">Electronics</option>
+              <option value="Furniture">Furniture</option>
+              <option value="Vehicle">Vehicle</option>
+              <option value="IT Equipment">IT Equipment</option>
+              <option value="HVAC">HVAC</option>
+              <option value="Other">Other</option>
+            </select>
+            <span class="error-msg" id="err-category"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="location">Location <span class="required">*</span></label>
+            <input type="text" id="location" placeholder="e.g. Block A - Room 101" />
+            <span class="error-msg" id="err-location"></span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="condition">Condition <span class="required">*</span></label>
+            <select id="condition">
+              <option value="">Select condition</option>
+              <option value="New">New</option>
+              <option value="Good">Good</option>
+              <option value="Fair">Fair</option>
+              <option value="Poor">Poor</option>
+            </select>
+            <span class="error-msg" id="err-condition"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="status">Status <span class="required">*</span></label>
+            <select id="status">
+              <option value="">Select status</option>
+              <option value="Operational">Operational</option>
+              <option value="Maintenance">Maintenance</option>
+              <option value="Out of Service">Out of Service</option>
+            </select>
+            <span class="error-msg" id="err-status"></span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="lastService">Last Service Date <span class="required">*</span></label>
+            <input type="date" id="lastService" />
+            <span class="error-msg" id="err-lastService"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="nextService">Next Service Date <span class="required">*</span></label>
+            <input type="date" id="nextService" />
+            <span class="error-msg" id="err-nextService"></span>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" id="cancelBtn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="saveBtn">Save Asset</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       VIEW ASSET MODAL (read-only details)
+       ============================================================ -->
+  <div class="modal-overlay" id="viewModalOverlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="viewModalTitle">
+      <div class="modal-header">
+        <h2 id="viewModalTitle">Asset Details</h2>
+        <button class="modal-close" id="closeViewModalBtn" aria-label="Close"><i class='bx bx-x'></i></button>
+      </div>
+      <div class="modal-body">
+        <dl class="view-details" id="viewDetailsList">
+          <!-- Filled in dynamically by assets.js -->
+        </dl>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" id="closeViewBtn">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       DELETE CONFIRMATION DIALOG
+       ============================================================ -->
+  <div class="modal-overlay" id="deleteModalOverlay" hidden>
+    <div class="modal modal-small" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <h2>Delete Asset</h2>
+        <button class="modal-close" id="closeDeleteModalBtn" aria-label="Close"><i class='bx bx-x'></i></button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete <strong id="deleteAssetName"></strong>? This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" id="cancelDeleteBtn">Cancel</button>
+        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast notification -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Shared dashboard script — handles sidebar open/close, hamburger, overlay, logout etc. -->
+  <!-- (Same file mainpage.html uses. If it also has dashboard-only logic like stat
+       counters, that's fine — it will simply find no matching elements on this page
+       and skip them harmlessly, as long as it uses getElementById checks.) -->
+  <script src="dashboard.js"></script>
+
+  <!-- Assets module logic (ES6 module) -->
+  <script type="module" src="assets.js"></script>
+</body>
+</html>
